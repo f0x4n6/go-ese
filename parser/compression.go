@@ -52,7 +52,7 @@ func DecompressLongValue(buf []byte) []byte {
 		}
 		return decompressedUTF16
 	case compression_flag == 0x3:
-		fmt.Printf("LZXPRESS compression not supported currently\n")
+		//fmt.Printf("LZXPRESS compression not supported currently\n")
 		return nil
 	default:
 		fmt.Printf("Unknown compression flag: %d\n", compression_flag)
