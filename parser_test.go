@@ -25,7 +25,7 @@ func (self *ESETestSuite) SetupTest() {
 
 // User Access Logs have some interesting columns types:
 //   - GUID
-//   - DateTime seem to be encoded in a different way - a uint64 windows
+//   - DateTime seem to be encoded in a different way - an uint64 Windows
 //     file time.
 func (self *ESETestSuite) TestUAL() {
 	cmdline := []string{

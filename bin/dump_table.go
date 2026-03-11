@@ -26,7 +26,7 @@ var (
 	dump_command_table_name_limit = dump_command.Flag(
 		"limit", "Only dump this many rows").Int()
 
-	STOP_ERROR = errors.New("Stop")
+	STOP_ERROR = errors.New("stop")
 )
 
 func doDump() {
@@ -61,7 +61,7 @@ func doDump() {
 		})
 	}
 
-	if err == STOP_ERROR {
+	if errors.Is(err, STOP_ERROR) {
 		return
 	}
 

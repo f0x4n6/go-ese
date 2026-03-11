@@ -5,19 +5,19 @@ within Windows to store various application specific information. It
 is the Microsoft analogue to sqlite - so just like sqlite is used to
 store chrome history, ESE is used to store Internet Explorer history.
 
-In essence it is a flat file database. This project is a library to
-help read such a file. The following description is a high lieve
-account of the main feautures of the file format and how to access
+In essence, it is a flat file database. This project is a library to
+help read such a file. The following description is a high live
+account of the main features of the file format and how to access
 these using the library.
 
 ## File format overview
 
-The file consists of pages. The page size can vary but it is specified
+The file consists of pages. The page size can vary, but it is specified
 in the file header.
 
 The file may contain multiple objects (tables) stored within
 pages. The pages form a B tree where data is stored in the actual leaf
-pages. As the file grows the tree canbe extended by inserting pages
+pages. As the file grows the tree can be extended by inserting pages
 into it.
 
 Data is stored inside each page in a `Tag`. Tags are just a series of
@@ -88,7 +88,7 @@ The ESE file contains a catalog starting from page 4. The catalog
 defines all the tables, their columns and types stat are stored in the
 database.
 
-You can see the catalong by runing the `catalog` command:
+You can see the catalog by running the `catalog` command:
 
 ```
 $ eseparser catalog /shared/WebCacheV01.dat
@@ -110,7 +110,7 @@ database table containing a description of all the tables in the file.
 
 ## Tables
 
-Ultimately the ESE format is a database storage engine and it stores
+Ultimately the ESE format is a database storage engine, and it stores
 rows in tables. Each table is stored inside the B tree rooted by the
 DFP ID shown in the catalog.  Each row is stored inside a tag (inside
 one of the pages within the tree).

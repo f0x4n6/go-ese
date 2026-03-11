@@ -26,7 +26,7 @@ func (self *LongValue) Buffer() []byte {
 	}
 
 	result := make([]byte, length)
-	self.Value.Reader().ReadAt(result, start)
+	_, _ = self.Value.Reader().ReadAt(result, start)
 	return result
 }
 
@@ -47,7 +47,7 @@ func (self LongValueLookup) GetLid(lid []byte) ([]byte, bool) {
 	// Swap byte order between Lid and key
 	swapped := []byte{lid[3], lid[2], lid[1], lid[0]}
 
-	// For now we only get the first segment
+	// For now, we only get the first segment
 	key := Key{
 		prefix: swapped,
 		suffix: make([]byte, 4),
@@ -95,24 +95,24 @@ func (self *Key) EndOffset() uint64 {
 func (self *LVKEY_BUFFER) ParseKey(ctx *ESEContext, header *PageHeader, value *Value) (key Key) {
 	key.end_offset = uint64(ctx.Profile.Off_LVKEY_BUFFER_KeyBuffer)
 
-	prefix_lenth := uint64(self.PrefixLength())
-	if prefix_lenth > 8 {
-		prefix_lenth = 8
+	prefix_length := uint64(self.PrefixLength())
+	if prefix_length > 8 {
+		prefix_length = 8
 	}
 
 	suffix_length := uint64(self.SuffixLength())
-	if suffix_length > 8-prefix_lenth {
-		suffix_length = 8 - prefix_lenth
+	if suffix_length > 8-prefix_length {
+		suffix_length = 8 - prefix_length
 	}
 
 	// Compressed keys
 	if value.Tag.Flags_()&fNDCompressed > 0 {
 		external_value := header.ExternalValueBytes(ctx)
-		if prefix_lenth > uint64(len(external_value)) {
-			prefix_lenth = uint64(len(external_value))
+		if prefix_length > uint64(len(external_value)) {
+			prefix_length = uint64(len(external_value))
 		}
 
-		for i := uint64(0); i < prefix_lenth; i++ {
+		for i := uint64(0); i < prefix_length; i++ {
 			key.prefix = append(key.prefix, external_value[i])
 		}
 		key_buffer := self.KeyBuffer()
@@ -127,13 +127,13 @@ func (self *LVKEY_BUFFER) ParseKey(ctx *ESEContext, header *PageHeader, value *V
 		// The key is not compressed - we read both prefix
 		// and suffix from the actual key
 		key_buffer := []byte(self.KeyBuffer())
-		for uint64(len(key_buffer)) < prefix_lenth+suffix_length {
+		for uint64(len(key_buffer)) < prefix_length+suffix_length {
 			key_buffer = append(key_buffer, 0)
 		}
 
-		key.prefix = key_buffer[:prefix_lenth]
-		key.suffix = key_buffer[prefix_lenth : prefix_lenth+suffix_length]
-		key.end_offset += suffix_length + prefix_lenth
+		key.prefix = key_buffer[:prefix_length]
+		key.suffix = key_buffer[prefix_length : prefix_length+suffix_length]
+		key.end_offset += suffix_length + prefix_length
 	}
 
 	return key

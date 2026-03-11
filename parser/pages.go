@@ -24,7 +24,7 @@ type Value struct {
 
 func (self *Value) GetBuffer() []byte {
 	result := make([]byte, self.BufferSize)
-	self.reader.ReadAt(result, self.BufferOffset)
+	_, _ = self.reader.ReadAt(result, self.BufferOffset)
 	return result
 }
 
@@ -41,7 +41,7 @@ func NewReaderValue(ctx *ESEContext, tag *Tag, PageID int64,
 		ctx.PageSize > 8192 && length > 0 {
 
 		buffer := make([]byte, 4)
-		reader.ReadAt(buffer, start)
+		_, _ = reader.ReadAt(buffer, start)
 
 		result.Flags = uint64(buffer[1] >> 5)
 		buffer[1] &= 0x1f
@@ -77,7 +77,7 @@ func (self *Tag) ValueSize(ctx *ESEContext) uint16 {
 }
 
 func GetPageValues(ctx *ESEContext, header *PageHeader, id int64) []*Value {
-	result := []*Value{}
+	var result []*Value
 
 	// Tags are written from the end of the page. Sizeof(Tag) = 4
 	offset := ctx.PageSize + header.Offset - 4
@@ -92,7 +92,7 @@ func GetPageValues(ctx *ESEContext, header *PageHeader, id int64) []*Value {
 	for tag_count := available_tags - 1; tag_count > 0; tag_count-- {
 		// Handle the case where available_tags lies and is way too
 		// large. The tags are stored in the end of the page and go
-		// backwards but they can not overlap the values which are
+		// backwards, but they can not overlap the values which are
 		// stored from the start of the page and go forward. So if the
 		// tag overlaps with a value then we break early as there are
 		// no more tags.

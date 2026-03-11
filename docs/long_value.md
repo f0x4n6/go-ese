@@ -126,7 +126,7 @@ Tags as above. But the data stores a series of REC structs. These are
 defined in rec.hxx#284
 
 The REC starts with a header then a sequence of fixed length fields
-(for columns with a fixed size like ints etc), then variable length
+(for columns with a fixed size like ints etc.), then variable length
 fields (like Text), followed by tagged fields.
 
 RECHDR:
@@ -167,7 +167,7 @@ To get a line from the page call cpage.GetPtr()
 Extracting the key from the line: NDILineToKeydataflags
 
 The Key has a prefix and suffix part. If the tag fFlags is compressed
-(bit 16 is on) then prefix count is the first 4 bytes and it refers to
+(bit 16 is on) then prefix count is the first 4 bytes, and it refers to
 the external header for the actual data.
 
 Otherwise, prefix is not used and suffix count is the first 4 bytes

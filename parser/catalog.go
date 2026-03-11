@@ -463,7 +463,7 @@ func getValueSlice(value *Value, start, end uint64) []byte {
 	}
 
 	buffer := make([]byte, length)
-	value.reader.ReadAt(buffer, value.BufferOffset+int64(start))
+	_, _ = value.reader.ReadAt(buffer, value.BufferOffset+int64(start))
 
 	return buffer
 }
@@ -480,7 +480,7 @@ Tagged values are used to store sparse values.
 
 They consist of an array of RecordTag, each RecordTag has an
 Identifier and an offset to the start of its data. The length of the
-data in each record is determine by the start of the next record.
+data in each record is determined by the start of the next record.
 
 Example:
 
@@ -553,7 +553,7 @@ func ParseTwoValue(buffer []byte, parseFn func([]byte) any) []any {
 	return twoValues
 }
 
-func (self *Table) ParseTaggedValueWithPrimitiveDecoder(ctx *ESEContext, value TaggedValue, parseFn func([]byte) any) any {
+func (self *Table) ParseTaggedValueWithPrimitiveDecoder(_ *ESEContext, value TaggedValue, parseFn func([]byte) any) any {
 	/*
 		1. Multi-values have at least 3 values
 		2. Two-values have exactly two values
@@ -604,7 +604,7 @@ func ParseTaggedValues(ctx *ESEContext, buffer []byte) map[uint32]TaggedValue {
 
 	reader := &BufferReaderAt{buffer}
 	first_record := ctx.Profile.RecordTag(reader, 0)
-	tags := []tagBuffer{}
+	var tags []tagBuffer
 
 	// Tags go from 0 to the start of the first tag's data
 	for offset := int64(0); offset < int64(ctx.GetTaggedValueOffset(first_record.TagData())); offset += 4 {
@@ -670,7 +670,7 @@ func ParseTaggedValues(ctx *ESEContext, buffer []byte) map[uint32]TaggedValue {
 func (self *Catalog) DumpTable(name string, cb func(row *ordereddict.Dict) error) error {
 	table_any, pres := self.Tables.Get(name)
 	if !pres {
-		return errors.New("Table not found")
+		return errors.New("table not found")
 	}
 
 	table := table_any.(*Table)
@@ -717,7 +717,7 @@ func parseItemName(dd_header *ESENT_DATA_DEFINITION_HEADER) string {
 
 // Walking over each LINE in the catalog tree, we parse the data
 // definitions.
-func (self *Catalog) __addItem(header *PageHeader, id int64, value *Value) error {
+func (self *Catalog) __addItem(_ *PageHeader, _ int64, value *Value) error {
 	leaf_entry := NewESENT_LEAF_ENTRY(self.ctx, value)
 	dd_header := self.ctx.Profile.ESENT_DATA_DEFINITION_HEADER(
 		leaf_entry.Reader, leaf_entry.EntryData())
@@ -743,7 +743,7 @@ func (self *Catalog) __addItem(header *PageHeader, id int64, value *Value) error
 
 	case "CATALOG_TYPE_COLUMN":
 		if self.currentTable == nil {
-			return errors.New("Internal Error: No existing table when adding column")
+			return errors.New("internal Error: No existing table when adding column")
 		}
 		column := catalog.Column()
 
@@ -759,7 +759,7 @@ func (self *Catalog) __addItem(header *PageHeader, id int64, value *Value) error
 
 	case "CATALOG_TYPE_INDEX":
 		if self.currentTable == nil {
-			return errors.New("Internal Error: No existing table when adding index")
+			return errors.New("internal Error: No existing table when adding index")
 		}
 
 		self.currentTable.Indexes.Set(itemName, catalog)
@@ -770,7 +770,7 @@ func (self *Catalog) __addItem(header *PageHeader, id int64, value *Value) error
 		}
 		lv := catalog.LongValue()
 
-		WalkPages(self.ctx, int64(lv.FatherDataPageNumber()),
+		_ = WalkPages(self.ctx, int64(lv.FatherDataPageNumber()),
 			func(header *PageHeader, id int64, value *Value) error {
 				// Ignore tags that are too small to contain a key
 				if value.BufferSize < 8 {
@@ -848,7 +848,7 @@ func (self *Catalog) Dump(options DumpOptions) string {
 
 		if options.LongValueTables && len(table.LongValueLookup) > 0 {
 			result += fmt.Sprintf("%sLongValues\n", space)
-			values := []*LongValue{}
+			var values []*LongValue
 			for _, lv := range table.LongValueLookup {
 				values = append(values, lv)
 			}

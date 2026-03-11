@@ -2,7 +2,7 @@ package parser
 
 import "fmt"
 
-func (self GUID) AsString() string {
+func (self *GUID) AsString() string {
 	data4 := self.Data4()
 	return fmt.Sprintf(
 		"{%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x}", self.Data1(),

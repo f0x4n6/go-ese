@@ -10,10 +10,6 @@ var (
 	DebugWalk = false
 )
 
-func DlvDebug() {
-
-}
-
 func DebugPageHeader(ctx *ESEContext, page *PageHeader) string {
 	return page.DebugString() + fmt.Sprintf("  EndOffset: %#x \n", page.EndOffset(ctx))
 }
