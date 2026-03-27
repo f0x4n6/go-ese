@@ -1,6 +1,6 @@
-module github.com/cuhsat/go-ese
+module github.com/f0x4n6/go-ese
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/Velocidex/ordereddict v0.0.0-20250821063524-02dc06e46238

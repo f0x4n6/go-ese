@@ -8,7 +8,7 @@ import (
 
 	"github.com/Velocidex/ordereddict"
 	"github.com/alecthomas/kingpin/v2"
-	"github.com/cuhsat/go-ese/parser"
+	"github.com/f0x4n6/go-ese/parser"
 )
 
 var (
